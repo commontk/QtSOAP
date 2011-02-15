@@ -19,7 +19,7 @@ ENDFOREACH()
 #-----------------------------------------------------------------------------
 # Qt
 #
-FIND_PACKAGE(Qt4 4.7 REQUIRED)
+FIND_PACKAGE(Qt4 4.6 REQUIRED)
 SET(QT_USE_QTNETWORK ON)
 SET(QT_USE_QTXML ON)
 INCLUDE(${QT_USE_FILE})
