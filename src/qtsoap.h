@@ -456,6 +456,9 @@ public:
     void setFaultString(const QString &fstring);
     void addFaultDetail(QtSoapType *detail);
 
+    //additional method for setting further namespaces
+    void useNamespace(const QString& prefix, const QString& namespaceURI);
+
     // Generating
     void clear();
     QString toXmlString(int indent = 0) const;
@@ -487,6 +490,9 @@ private:
     QtSoapStruct margs;
 
     QString errorStr;
+
+    QString externalNamespacePrefix;
+    QString externalNamespaceURI;
 };
 
 class QT_QTSOAP_EXPORT QtSoapTypeConstructorBase

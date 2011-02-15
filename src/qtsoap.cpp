@@ -2544,6 +2544,15 @@ bool QtSoapMessage::isValidSoapMessage(const QDomDocument &candidate)
 }
 
 /*!
+    Register an external namespace and set as current one
+*/
+void QtSoapMessage::useNamespace(const QString& prefix, const QString& namespaceURI) {
+    //QtSoapNamespaces::instance().registerNamespace(prefix.toAscii(), namespaceURI.toAscii());
+    externalNamespacePrefix = prefix;
+    externalNamespaceURI = namespaceURI;
+}
+
+/*!
     Returns the XML representation of the SOAP message as a QString,
     optionally indenting using \a indent spaces.
 */
@@ -2563,6 +2572,12 @@ QString QtSoapMessage::toXmlString(int indent) const
 
     env.setAttribute("xmlns:" + QtSoapNamespaces::instance().prefixFor(XML_SCHEMA),
 		     XML_SCHEMA);
+
+    if(!externalNamespacePrefix.isEmpty()) {
+  env.setAttribute("xmlns:" + externalNamespacePrefix, externalNamespaceURI);
+    }
+
+
 
     return doc.toString(indent);
 }
