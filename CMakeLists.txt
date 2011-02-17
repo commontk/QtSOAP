@@ -3,8 +3,13 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.2)
 
 PROJECT(QtSOAP)
 
-OPTION(BUILD_SHARED_LIBS "Build as shared library" ON)
 OPTION(QtSOAP_BUILD_EXAMPLES "Build examples" OFF)
+
+# We build QtSOAP as a static library. On Windows, this avoids copying
+# a dll to the directory containing the linked executable or fiddling
+# with the PATH environment variable.
+# Further, if we would build QtSOAP as a shared library, each using
+# library/executable must use -DQT_SOAP_IMPORT (if we don't change qtsoap.h)
 
 #-----------------------------------------------------------------------------
 # Output directories.
