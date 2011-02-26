@@ -27,4 +27,12 @@ TARGET_LINK_LIBRARIES(
   ${libname}
   ${${PROJECT_NAME}_LINK_LIBRARIES}
   )
-  
+
+#-----------------------------------------------------------------------------
+#
+# To fix compilation problem: relocation R_X86_64_32 against `a local symbol' can not be
+# used when making a shared object; recompile with -fPIC
+#
+IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
+  SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-fPIC")
+ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
