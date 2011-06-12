@@ -1281,7 +1281,7 @@ bool QtSoapArray::parse(QDomNode node)
 	// ### Check namespace
 	QDomAttr posattr = elem.attributeNode("position");
 	if (!posattr.isNull())
-	    pos = posattr.value().toInt();
+	    pos = posattr.value().mid(1, posattr.value().size()-2).toInt();
 
 	array.insert(pos, type);
 	++pos;
