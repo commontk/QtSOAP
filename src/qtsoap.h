@@ -48,21 +48,18 @@
 #include <QtCore/QLinkedList>
 #include <QtCore/QPointer>
 
-#if defined(Q_WS_WIN)
-#  if !defined(QT_QTSOAP_EXPORT) && !defined(QT_QTSOAP_IMPORT)
-#    define QT_QTSOAP_EXPORT
-#  elif defined(QT_QTSOAP_IMPORT)
-#    if defined(QT_QTSOAP_EXPORT)
-#      undef QT_QTSOAP_EXPORT
-#    endif
-#    define QT_QTSOAP_EXPORT __declspec(dllimport)
-#  elif defined(QT_QTSOAP_EXPORT)
-#    undef QT_QTSOAP_EXPORT
-#    define QT_QTSOAP_EXPORT __declspec(dllexport)
-#  endif
-#else
-#  define QT_QTSOAP_EXPORT
+#if defined(Q_OS_WIN) || defined(Q_OS_SYMBIAN)
+  #if defined(QtSOAP_EXPORTS)
+    #define QT_QTSOAP_EXPORT Q_DECL_EXPORT
+  #else
+    #define QT_QTSOAP_EXPORT Q_DECL_IMPORT
+  #endif
 #endif
+
+#if !defined(QT_QTSOAP_EXPORT)
+  #define QT_QTSOAP_EXPORT Q_DECL_EXPORT
+#endif
+
 
 #define SOAPv11_ENVELOPE    "http://schemas.xmlsoap.org/soap/envelope/"
 #define SOAPv11_ENCODING    "http://schemas.xmlsoap.org/soap/encoding/"

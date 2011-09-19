@@ -22,7 +22,7 @@
 # QtSOAPConfig.cmake - QtSOAP CMake configuration file for external projects.
 #
 
-SET(QtSOAP_LIBRARIES QtSOAP)
+SET(QtSOAP_LIBRARIES @PROJECT_NAME@)
 
 # The QtSOAP include file directories.
 SET(QtSOAP_INCLUDE_DIRS "@QtSOAP_INCLUDE_DIRS_CONFIG@")
