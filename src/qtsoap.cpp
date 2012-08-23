@@ -3161,9 +3161,8 @@ void QtSoapHttpTransport::setAction(const QString &action)
     Submits the SOAP message \a request to the path \a path on the
     HTTP server set using setHost().
 */
-void QtSoapHttpTransport::submitRequest(QtSoapMessage &request, const QString &path)
+void QtSoapHttpTransport::submitRequest(QNetworkRequest &networkReq, QtSoapMessage &request, const QString &path)
 {
-    QNetworkRequest networkReq;
     networkReq.setHeader(QNetworkRequest::ContentTypeHeader, QLatin1String("text/xml;charset=utf-8"));
     networkReq.setRawHeader("SOAPAction", soapAction.toAscii());
     url.setPath(path);
@@ -3171,6 +3170,12 @@ void QtSoapHttpTransport::submitRequest(QtSoapMessage &request, const QString &p
 
     soapResponse.clear();
     networkRep = networkMgr.post(networkReq, request.toXmlString().toUtf8().constData());
+}
+
+void QtSoapHttpTransport::submitRequest(QtSoapMessage &request, const QString &path)
+{
+    QNetworkRequest networkReq;
+    submitRequest(networkReq, request, path);
 }
 
 
