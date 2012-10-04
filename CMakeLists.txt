@@ -3,6 +3,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.2)
 
 PROJECT(QtSOAP)
 
+include(CTestUseLaunchers OPTIONAL)
+
 OPTION(QtSOAP_BUILD_EXAMPLES "Build examples" OFF)
 
 # We build QtSOAP as a static library. On Windows, this avoids copying
