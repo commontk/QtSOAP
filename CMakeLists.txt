@@ -1,5 +1,19 @@
+set(QtSOAP_QT_VERSION "4" CACHE STRING "Expected Qt version")
+mark_as_advanced(QtSOAP_QT_VERSION)
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.2)
+set_property(CACHE QtSOAP_QT_VERSION PROPERTY STRINGS 4 5)
+
+if(NOT (QtSOAP_QT_VERSION VERSION_EQUAL "4" OR QtSOAP_QT_VERSION VERSION_EQUAL "5"))
+  message(FATAL_ERROR "Expected value for QtSOAP_QT_VERSION is either '4' or '5'")
+endif()
+
+if(QtSOAP_QT_VERSION VERSION_GREATER "4")
+  cmake_minimum_required(VERSION 2.8.12)
+  set(QT5_INSTALL_PREFIX "" CACHE PATH "The install location of Qt5")
+  set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${QT5_INSTALL_PREFIX})
+else()
+  cmake_minimum_required(VERSION 2.8.2)
+endif()
 
 PROJECT(QtSOAP)
 
@@ -26,10 +40,12 @@ ENDFOREACH()
 #-----------------------------------------------------------------------------
 # Qt
 #
-FIND_PACKAGE(Qt4 4.6 REQUIRED)
-SET(QT_USE_QTNETWORK ON)
-SET(QT_USE_QTXML ON)
-INCLUDE(${QT_USE_FILE})
+if(QtSOAP_QT_VERSION VERSION_GREATER "4")
+  find_package(Qt5 COMPONENTS Core Network Xml REQUIRED)
+else()
+  find_package(Qt4 4.6 COMPONENTS QtCore QtNetwork QtXml REQUIRED)
+  include(${QT_USE_FILE})
+endif()
 
 #-----------------------------------------------------------------------------
 # Subdirectories
