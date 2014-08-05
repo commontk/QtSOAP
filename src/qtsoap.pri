@@ -11,6 +11,6 @@ qtsoap-uselib:!qtsoap-buildlib {
 }
 
 win32 {
-    contains(TEMPLATE, lib):contains(CONFIG, shared):DEFINES += QT_QTSOAP_EXPORT
-    else:qtsoap-uselib:DEFINES += QT_QTSOAP_IMPORT
+    contains(TEMPLATE, lib):contains(CONFIG, shared):DEFINES += QtSOAP_EXPORTS
+    else:qtsoap-uselib:DEFINES += QT_QTSOAP_EXPORT=Q_DECL_IMPORT
 }
