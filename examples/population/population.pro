@@ -6,3 +6,5 @@ include(../../src/qtsoap.pri)
 
 HEADERS += population.h
 SOURCES += main.cpp population.cpp
+
+QT += widgets
