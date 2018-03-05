@@ -988,7 +988,7 @@ QtSoapArray &QtSoapArray::operator = (const QtSoapArray &copy)
 
     \sa insert()
 */
-void QtSoapArray::append(QtSoapType *item)
+void QtSoapArray::append(std::shared_ptr<QtSoapType> item)
 {
     if (order != 1) {
 	qWarning("Attempted to insert item at position (%i) in %i-dimensional QtSoapArray.",
@@ -1017,7 +1017,7 @@ void QtSoapArray::append(QtSoapType *item)
     is 'c', and so on. (There are other insert() overloads that allow
     for each dimension to be specified individually.)
 */
-void QtSoapArray::insert(int pos, QtSoapType *item)
+void QtSoapArray::insert(int pos, std::shared_ptr<QtSoapType> item)
 {
     if (arrayType == Other)
 	arrayType = item->type();
@@ -1042,7 +1042,7 @@ void QtSoapArray::insert(int pos, QtSoapType *item)
     Insert the QtoSoapType \a item at position \a pos0 x \a pos1 in a
     two dimensional array.
 */
-void QtSoapArray::insert(int pos0, int pos1, QtSoapType *item)
+void QtSoapArray::insert(int pos0, int pos1, std::shared_ptr<QtSoapType> item)
 {
     if (order != 2) {
 	qWarning("Attempted to insert item at position (%i, %i)"
@@ -1067,7 +1067,7 @@ void QtSoapArray::insert(int pos0, int pos1, QtSoapType *item)
     Insert the QtoSoapType \a item at position \a pos0 x \a pos1 x \a
     pos2 in a three dimensional array.
 */
-void QtSoapArray::insert(int pos0, int pos1, int pos2, QtSoapType *item)
+void QtSoapArray::insert(int pos0, int pos1, int pos2, std::shared_ptr<QtSoapType> item)
 {
     if (order != 3) {
 	qWarning("Attempted to insert item at position (%i, %i, %i)"
@@ -1092,7 +1092,7 @@ void QtSoapArray::insert(int pos0, int pos1, int pos2, QtSoapType *item)
     Insert the QtoSoapType \a item at position \a pos0 x \a pos1 x \a
     pos2 x \a pos3 in a four dimensional array.
 */
-void QtSoapArray::insert(int pos0, int pos1, int pos2, int pos3, QtSoapType *item)
+void QtSoapArray::insert(int pos0, int pos1, int pos2, int pos3, std::shared_ptr<QtSoapType> item)
 {
     if (order != 4) {
 	qWarning("Attempted to insert item at position (%i, %i, %i, %i)"
@@ -1115,7 +1115,7 @@ void QtSoapArray::insert(int pos0, int pos1, int pos2, int pos3, QtSoapType *ite
     pos2 x \a pos3 x \a pos4 in a five dimensional array.
 */
 void QtSoapArray::insert(int pos0, int pos1, int pos2, int pos3, int pos4,
-			 QtSoapType *item)
+             std::shared_ptr<QtSoapType> item)
 {
     if (order != 5) {
 	qWarning("Attempted to insert item at position (%i, %i, %i, %i, %i)"
@@ -1178,7 +1178,7 @@ QString QtSoapArray::arrayTypeString() const
 	if (it.data()->type() != Array)
 	    break;
 
-	ar = (QtSoapArray *)it.data();
+    ar = (QtSoapArray *)it.data().get();
     } while (ar);
 
 
@@ -1272,8 +1272,8 @@ bool QtSoapArray::parse(QDomNode node)
 
 	QDomElement elem = n.toElement();
 
-	QtSmartPtr<QtSoapType> type = QtSoapTypeFactory::instance().soapType(elem);
-	if (!type.ptr()) {
+    std::shared_ptr<QtSoapType> type = QtSoapTypeFactory::instance().soapType(elem);
+    if (!type) {
 	    // ### An error in the soap document.
 	    return false;
 	}
@@ -1633,22 +1633,22 @@ void QtSoapArrayIterator::pos(int *pos0, int *pos1, int *pos2,
     Returns a reference to the item that the iterator is currently
     pointing to.
 */
-QtSoapType *QtSoapArrayIterator::data()
+std::shared_ptr<QtSoapType> QtSoapArrayIterator::data()
 {
     if (it == arr->array.end())
         return 0;
-    return it.value().ptr();
+    return it.value();
 }
 
 /*!
     Returns a reference to the item that the iterator is currently
     pointing to.
 */
-const QtSoapType *QtSoapArrayIterator::current() const
+const std::shared_ptr<QtSoapType> QtSoapArrayIterator::current() const
 {
     if (it == arr->array.end())
         return 0;
-    return it.value().ptr();
+    return it.value();
 }
 
 /*!
@@ -1741,7 +1741,7 @@ QtSoapStruct &QtSoapStruct::operator =(const QtSoapStruct &copy)
     Inserts the QtSoapType \a item into this struct. Any existing
     item with the same QName (qualified name) will be erased.
 */
-void QtSoapStruct::insert(QtSoapType *item)
+void QtSoapStruct::insert(std::shared_ptr<QtSoapType> item)
 {
     dict.append(item);
 }
@@ -1796,8 +1796,8 @@ bool QtSoapStruct::parse(QDomNode node)
 	    return false;
 	}
 
-	QtSmartPtr<QtSoapType> type = QtSoapTypeFactory::instance().soapType(n.toElement());
-	if (!type.ptr()) {
+    std::shared_ptr<QtSoapType> type = QtSoapTypeFactory::instance().soapType(n.toElement());
+    if (!type) {
 	    errorStr = "In the struct element " + e.tagName();
 	    errorStr += ", child #" + QString::number(i) + ", ";
 	    errorStr += n.toElement().tagName() + ", was not recognized as a SOAP type.";
@@ -1880,7 +1880,7 @@ QtSoapType &QtSoapStruct::operator [](int i)
     if (i < 0 || i >= dict.count())
         return NIL;
 
-    return *dict[i].ptr();
+    return *dict[i].get();
 }
 
 /*!
@@ -1898,7 +1898,7 @@ const QtSoapType &QtSoapStruct::operator [](int i) const
     if (i < 0 || i >= dict.count())
         return NIL;
 
-    return *dict[i].ptr();
+    return *dict[i].get();
 }
 
 /*!
@@ -1910,9 +1910,9 @@ QtSoapType &QtSoapStruct::at(const QtSoapQName &key)
 {
     static QtSoapType NIL;
 
-    QListIterator<QtSmartPtr<QtSoapType> > it(dict);
+    QListIterator<std::shared_ptr<QtSoapType> > it(dict);
     while (it.hasNext()) {
-        QtSoapType *ret = it.next().ptr();
+        QtSoapType *ret = it.next().get();
         if (ret->name() == key)
             return *ret;
     }
@@ -1967,21 +1967,21 @@ QtSoapQName QtSoapStructIterator::key() const
 /*!
     Returns a pointer to the current item, or 0 if there is none.
 */
-QtSoapType *QtSoapStructIterator::data()
+std::shared_ptr<QtSoapType> QtSoapStructIterator::data()
 {
     if (it == itEnd)
-        return 0;
-    return it->ptr();
+        return nullptr;
+    return *it;
 }
 
 /*!
     Returns a pointer to the current item, or 0 if there is none.
 */
-const QtSoapType *QtSoapStructIterator::current() const
+const std::shared_ptr<QtSoapType> QtSoapStructIterator::current() const
 {
     if (it == itEnd)
-        return 0;
-    return it->ptr();
+        return nullptr;
+    return *it;
 }
 
 /*!
@@ -2452,7 +2452,7 @@ bool QtSoapMessage::setContent(const QByteArray &buffer)
 		  errorLine, errorColumn);
 	setFaultCode(VersionMismatch);
 	setFaultString("XML parse error");
-	addFaultDetail(new QtSoapSimpleType(QtSoapQName("ParseError"), s));
+    addFaultDetail(std::make_shared<QtSoapSimpleType>(QtSoapQName("ParseError"), s));
 	return false;
     }
 
@@ -2494,7 +2494,7 @@ bool QtSoapMessage::isValidSoapMessage(const QDomDocument &candidate)
     if (localName(tmpe.tagName()).toUpper() != "ENVELOPE") {
 	setFaultCode(VersionMismatch);
 	setFaultString("SOAP structure invalid");
-	addFaultDetail(new QtSoapSimpleType(QtSoapQName("extra"), "root element \"" + tmpe.localName()
+    addFaultDetail(std::make_shared<QtSoapSimpleType>(QtSoapQName("extra"), "root element \"" + tmpe.localName()
 					+ "\"/\"" + tmpe.tagName() + "\" is not envelope"));
 	return false;
     }
@@ -2503,7 +2503,7 @@ bool QtSoapMessage::isValidSoapMessage(const QDomDocument &candidate)
     if (tmp.isNull() || !tmp.isElement()) {
 	setFaultCode(VersionMismatch);
 	setFaultString("SOAP structure invalid");
-	addFaultDetail(new QtSoapSimpleType(QtSoapQName("extra"), "mandatory body element missing"));
+    addFaultDetail(std::make_shared<QtSoapSimpleType>(QtSoapQName("extra"), "mandatory body element missing"));
 	return false;
     }
 
@@ -2518,7 +2518,7 @@ bool QtSoapMessage::isValidSoapMessage(const QDomDocument &candidate)
     if (!foundHeader && (tmp.isNull() || !tmp.isElement())) {
 	setFaultCode(VersionMismatch);
 	setFaultString("SOAP structure invalid");
-	addFaultDetail(new QtSoapSimpleType(QtSoapQName("extra"), "mandatory body element missing"));
+    addFaultDetail(std::make_shared<QtSoapSimpleType>(QtSoapQName("extra"), "mandatory body element missing"));
 	return false;
     }
 
@@ -2527,7 +2527,7 @@ bool QtSoapMessage::isValidSoapMessage(const QDomDocument &candidate)
     if (localName(tmpe3.tagName()).toUpper() != "BODY") {
 	setFaultCode(VersionMismatch);
 	setFaultString("SOAP structure invalid");
-	addFaultDetail(new QtSoapSimpleType(QtSoapQName("extra"), "mandatory body element missing"));
+    addFaultDetail(std::make_shared<QtSoapSimpleType>(QtSoapQName("extra"), "mandatory body element missing"));
 	return false;
     }
 
@@ -2536,7 +2536,7 @@ bool QtSoapMessage::isValidSoapMessage(const QDomDocument &candidate)
     if (tmpe.namespaceURI() != SOAPv11_ENVELOPE) {
 	setFaultCode(VersionMismatch);
 	setFaultString("SOAP structure invalid");
-	addFaultDetail(new QtSoapSimpleType(QtSoapQName("extra"), "Unsupported namespace for envelope element"));
+    addFaultDetail(std::make_shared<QtSoapSimpleType>(QtSoapQName("extra"), "Unsupported namespace for envelope element"));
 	return false;
     }
 
@@ -2595,7 +2595,7 @@ QString QtSoapMessage::errorString() const
     Adds \a item to the body in the SOAP message. The item is added
     after the last existing item in the body.
 */
-void QtSoapMessage::addBodyItem(QtSoapType *item)
+void QtSoapMessage::addBodyItem(std::shared_ptr<QtSoapType> item)
 {
     body().insert(item);
 }
@@ -2604,11 +2604,11 @@ void QtSoapMessage::addBodyItem(QtSoapType *item)
     Adds \a item to the header in the SOAP message. The item is added
     after the last existing item in the header.
 */
-void QtSoapMessage::addHeaderItem(QtSoapType *item)
+void QtSoapMessage::addHeaderItem(std::shared_ptr<QtSoapType> item)
 {
     QtSoapType &headerTmp = envelope[QtSoapQName("Header", SOAPv11_ENVELOPE)];
     if (!headerTmp.isValid())
-	envelope.insert(new QtSoapStruct(QtSoapQName("Header", SOAPv11_ENVELOPE)));
+    envelope.insert(std::make_shared<QtSoapStruct>(QtSoapQName("Header", SOAPv11_ENVELOPE)));
 
     QtSoapStruct &header = (QtSoapStruct &)envelope[QtSoapQName("Header", SOAPv11_ENVELOPE)];
     header.insert(item);
@@ -2701,7 +2701,7 @@ QtSoapStruct &QtSoapMessage::body() const
 
     QtSoapType &bodyTmp = envelope[bodyName];
     if (!bodyTmp.isValid())
-	envelope.insert(new QtSoapStruct(bodyName));
+    envelope.insert(std::make_shared<QtSoapStruct>(bodyName));
 
     return (QtSoapStruct &)envelope[bodyName];
 }
@@ -2715,7 +2715,7 @@ QtSoapStruct &QtSoapMessage::header() const
 
     QtSoapType &headerTmp = envelope[headerName];
     if (!headerTmp.isValid())
-	envelope.insert(new QtSoapStruct(headerName));
+    envelope.insert(std::make_shared<QtSoapStruct>(headerName));
 
     return (QtSoapStruct &)envelope[headerName];
 }
@@ -2731,7 +2731,7 @@ void QtSoapMessage::setFaultCode(FaultCode code)
     }
 
     if (!body()[QtSoapQName("Fault", SOAPv11_ENVELOPE)].isValid())
-	addBodyItem(new QtSoapStruct(QtSoapQName("Fault", SOAPv11_ENVELOPE)));
+    addBodyItem(std::make_shared<QtSoapStruct>(QtSoapQName("Fault", SOAPv11_ENVELOPE)));
 
     QString codeStr;
     switch (code) {
@@ -2754,7 +2754,7 @@ void QtSoapMessage::setFaultCode(FaultCode code)
 
     QtSoapType &node = body()[QtSoapQName("Fault", SOAPv11_ENVELOPE)];
     QtSoapStruct &fault = reinterpret_cast<QtSoapStruct &>(node);
-    fault.insert(new QtSoapSimpleType(QtSoapQName("Faultcode"), codeStr));
+    fault.insert(std::make_shared<QtSoapSimpleType>(QtSoapQName("Faultcode"), codeStr));
 }
 
 /*!
@@ -2768,18 +2768,18 @@ void QtSoapMessage::setFaultString(const QString &s)
     }
 
     if (!body()[QtSoapQName("Fault", SOAPv11_ENVELOPE)].isValid())
-	addBodyItem(new QtSoapStruct(QtSoapQName("Fault", SOAPv11_ENVELOPE)));
+    addBodyItem(std::make_shared<QtSoapStruct>(QtSoapQName("Fault", SOAPv11_ENVELOPE)));
 
     QtSoapType &node = body()[QtSoapQName("Fault", SOAPv11_ENVELOPE)];
     QtSoapStruct &fault = reinterpret_cast<QtSoapStruct &>(node);
-    fault.insert(new QtSoapSimpleType(QtSoapQName("Faultstring"), s));
+    fault.insert(std::make_shared<QtSoapSimpleType>(QtSoapQName("Faultstring"), s));
 }
 
 /*!
    Adds the QtSoapType \a detail to the end of the list of faultdetail
    items in a SOAP Fault message.
 */
-void QtSoapMessage::addFaultDetail(QtSoapType *detail)
+void QtSoapMessage::addFaultDetail(std::shared_ptr<QtSoapType>detail)
 {
     if (type != Fault && type != OtherType) {
 	clear();
@@ -2787,12 +2787,12 @@ void QtSoapMessage::addFaultDetail(QtSoapType *detail)
     }
 
     if (!body()[QtSoapQName("Fault", SOAPv11_ENVELOPE)].isValid())
-	addBodyItem(new QtSoapStruct(QtSoapQName("Fault", SOAPv11_ENVELOPE)));
+    addBodyItem(std::make_shared<QtSoapStruct>(QtSoapQName("Fault", SOAPv11_ENVELOPE)));
 
     QtSoapType &node = body()[QtSoapQName("Fault", SOAPv11_ENVELOPE)];
     QtSoapStruct &fault = reinterpret_cast<QtSoapStruct &>(node);
     if (!fault[QtSoapQName("Faultdetail", SOAPv11_ENVELOPE)].isValid())
-	fault.insert(new QtSoapStruct(QtSoapQName("Faultdetail", SOAPv11_ENVELOPE)));
+    fault.insert(std::make_shared<QtSoapStruct>(QtSoapQName("Faultdetail", SOAPv11_ENVELOPE)));
 
     QtSoapType &node2 = fault[QtSoapQName("Faultdetail", SOAPv11_ENVELOPE)];
     QtSoapStruct &fdetail = reinterpret_cast<QtSoapStruct &>(node2);
@@ -2830,7 +2830,7 @@ void QtSoapMessage::setMethod(const QtSoapQName &meth)
 	type = MethodRequest;
     }
 
-    addBodyItem(new QtSoapStruct(meth));
+    addBodyItem(std::make_shared<QtSoapStruct>(meth));
 }
 
 /*! \overload
@@ -2848,7 +2848,7 @@ void QtSoapMessage::setMethod(const QString &name, const QString &uri)
 
    \warning setMethod() must be called before calling this function.
 */
-void QtSoapMessage::addMethodArgument(QtSoapType *arg)
+void QtSoapMessage::addMethodArgument(std::shared_ptr<QtSoapType> arg)
 {
     if (body().count() == 0) {
 	qWarning("Attempted to add argument (%s:%s) without first setting method",
@@ -2869,7 +2869,7 @@ void QtSoapMessage::addMethodArgument(QtSoapType *arg)
 */
 void QtSoapMessage::addMethodArgument(const QString &name, const QString &uri, const QString &value)
 {
-    addMethodArgument(new QtSoapSimpleType(QtSoapQName(name, uri), value));
+    addMethodArgument(std::make_shared<QtSoapSimpleType>(QtSoapQName(name, uri), value));
 }
 
 /*! \overload
@@ -2882,7 +2882,7 @@ void QtSoapMessage::addMethodArgument(const QString &name, const QString &uri, c
 */
 void QtSoapMessage::addMethodArgument(const QString &name, const QString &uri, bool value, int dummy)
 {
-    addMethodArgument(new QtSoapSimpleType(QtSoapQName(name, uri), value, dummy));
+    addMethodArgument(std::make_shared<QtSoapSimpleType>(QtSoapQName(name, uri), value, dummy));
 }
 
 /*! \overload
@@ -2892,7 +2892,7 @@ void QtSoapMessage::addMethodArgument(const QString &name, const QString &uri, b
 */
 void QtSoapMessage::addMethodArgument(const QString &name, const QString &uri, int value)
 {
-    addMethodArgument(new QtSoapSimpleType(QtSoapQName(name, uri), value));
+    addMethodArgument(std::make_shared<QtSoapSimpleType>(QtSoapQName(name, uri), value));
 }
 
 /*!
@@ -2979,10 +2979,10 @@ bool QtSoapTypeFactory::registerHandler(const QString &name, QtSoapTypeConstruct
 
 /*! \internal
 */
-QtSmartPtr<QtSoapType> QtSoapTypeFactory::soapType(QDomNode node) const
+std::shared_ptr<QtSoapType> QtSoapTypeFactory::soapType(QDomNode node) const
 {
     if (node.isNull() || !node.isElement())
-	return QtSmartPtr<QtSoapType>();
+    return std::shared_ptr<QtSoapType>();
 
     QDomElement elem = node.toElement();
 
@@ -3009,15 +3009,15 @@ QtSmartPtr<QtSoapType> QtSoapTypeFactory::soapType(QDomNode node) const
     }
 
     if (!constructor) {
-	return QtSmartPtr<QtSoapType>();
+    return std::shared_ptr<QtSoapType>();
     }
 
-    QtSoapType *type = constructor->createObject(node);
+    auto type = constructor->createObject(node);
 
     if (!type)
 	errorStr = constructor->errorString();
 
-    return QtSmartPtr<QtSoapType>(type);
+    return type;
 }
 
 /*!

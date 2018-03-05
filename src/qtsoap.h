@@ -46,7 +46,8 @@
 #include <QtCore/QUrl>
 #include <QtCore/QHash>
 #include <QtCore/QLinkedList>
-#include <QtCore/QPointer>
+
+#include <memory>
 
 #if defined(Q_OS_WIN) || defined(Q_OS_SYMBIAN)
   #if defined(QtSOAP_EXPORTS)
@@ -68,89 +69,6 @@
 #define XML_SCHEMA          "http://www.w3.org/1999/XMLSchema"
 #define XML_SCHEMA_INSTANCE "http://www.w3.org/1999/XMLSchema-instance"
 #define XML_NAMESPACE       "http://www.w3.org/XML/1998/namespace"
-
-template <class T>
-class QtSmartPtr
-{
-public:
-    inline QtSmartPtr(T *data = 0)
-    {
-	d = data;
-	r = new int;
-	*r = 1;
-    }
-
-    inline QtSmartPtr(const QtSmartPtr &copy)
-    {
-	if (*copy.r != 0)
-	    ++(*copy.r);
-
-	r = copy.r;
-	d = copy.d;
-    }
-
-    inline ~QtSmartPtr()
-    {
-        if ((*r) == 0)
-            delete r;
-	else if ((*r) != 0 && --(*r) == 0) {
-	    delete r;
-	    if (d) delete d;
-	}
-    }
-
-    inline QtSmartPtr &operator =(const QtSmartPtr &copy)
-    {
-	if (*copy.r != 0)
-	    ++(*copy.r);
-
-        if ((*r) == 0)
-            delete r;
-	else if ((*r) != 0 && --(*r) == 0) {
-	    delete r;
-	    if (d) delete d;
-	}
-
-	r = copy.r;
-	d = copy.d;
-	return *this;
-    }
-
-    inline T &operator *() const
-    {
-	return *d;
-    }
-
-    inline T *operator ->() const
-    {
-	    return d;
-    }
-
-    inline T *ptr() const
-    {
-	return d;
-    }
-
-    inline T &ref() const
-    {
-	return *d;
-    }
-
-    inline T *releasedPtr() const
-    {
-	(*r) = 0;
-	return d;
-    }
-
-    inline bool isNull() const
-    {
-	return d == 0;
-    }
-
-private:
-    int *r;
-    T *d;
-};
 
 class QT_QTSOAP_EXPORT QtSoapQName
 {
@@ -274,12 +192,12 @@ public:
     const QtSoapType &operator [](const QString &) const;
     const QtSoapType &operator [](const QtSoapQName &) const;
 
-    void append(QtSoapType *item);
-    void insert(int pos0, QtSoapType *item);
-    void insert(int pos0,int pos1, QtSoapType *item);
-    void insert(int pos0,int pos1,int pos2, QtSoapType *item);
-    void insert(int pos0,int pos1,int pos2,int pos3, QtSoapType *item);
-    void insert(int pos0,int pos1,int pos2,int pos3,int pos4, QtSoapType *item);
+    void append(std::shared_ptr<QtSoapType> item);
+    void insert(int pos0, std::shared_ptr<QtSoapType> item);
+    void insert(int pos0, int pos1, std::shared_ptr<QtSoapType> item);
+    void insert(int pos0, int pos1, int pos2, std::shared_ptr<QtSoapType> item);
+    void insert(int pos0, int pos1, int pos2, int pos3, std::shared_ptr<QtSoapType> item);
+    void insert(int pos0, int pos1, int pos2, int pos3, int pos4, std::shared_ptr<QtSoapType> item);
 
     QDomElement toDomElement(QDomDocument doc) const;
 
@@ -289,7 +207,7 @@ protected:
     QString arraySizeString() const;
     QString arrayTypeString() const;
 
-    QHash<int, QtSmartPtr<QtSoapType> > array;
+    QHash<int, std::shared_ptr<QtSoapType> > array;
     int lastIndex;
 
 private:
@@ -309,8 +227,8 @@ public:
     int pos() const;
     void pos(int *pos0, int *pos1 = 0, int *pos2 = 0, int *pos3 = 0, int *pos4 = 0) const;
 
-    QtSoapType *data();
-    const QtSoapType *current() const;
+    std::shared_ptr<QtSoapType> data();
+    const std::shared_ptr<QtSoapType> current() const;
 
     void operator ++();
     bool operator !=(const QtSoapArrayIterator &j) const;
@@ -319,7 +237,7 @@ public:
     bool atEnd() const;
 
 private:
-    QHash<int, QtSmartPtr<QtSoapType> >::Iterator it;
+    QHash<int, std::shared_ptr<QtSoapType> >::Iterator it;
     QtSoapArray *arr;
 };
 
@@ -352,14 +270,14 @@ public:
     const QtSoapType &operator [](const QtSoapQName &key) const;
     const QtSoapType &operator [](const QString &key) const;
 
-    void insert(QtSoapType *item);
+    void insert(std::shared_ptr<QtSoapType> item);
 
     QDomElement toDomElement(QDomDocument doc) const;
 
     friend class QtSoapStructIterator;
 
 protected:
-    QList<QtSmartPtr<QtSoapType> > dict;
+    QList<std::shared_ptr<QtSoapType> > dict;
 };
 
 class QT_QTSOAP_EXPORT QtSoapStructIterator
@@ -369,16 +287,16 @@ public:
     ~QtSoapStructIterator();
 
     QtSoapQName key() const;
-    QtSoapType *data();
-    const QtSoapType *current() const;
+    std::shared_ptr<QtSoapType> data();
+    const std::shared_ptr<QtSoapType> current() const;
 
     void operator ++();
     bool operator !=(const QtSoapStructIterator &j) const;
     bool operator ==(const QtSoapStructIterator &j) const;
 
 private:
-    QList<QtSmartPtr<QtSoapType> >::Iterator it;
-    QList<QtSmartPtr<QtSoapType> >::Iterator itEnd;
+    QList<std::shared_ptr<QtSoapType> >::Iterator it;
+    QList<std::shared_ptr<QtSoapType> >::Iterator itEnd;
 };
 
 class QT_QTSOAP_EXPORT QtSoapSimpleType : public QtSoapType
@@ -423,15 +341,15 @@ public:
     bool setContent(const QByteArray &buffer);
     bool setContent(QDomDocument &d);
 
-    void addBodyItem(QtSoapType *);
-    void addHeaderItem(QtSoapType *);
+    void addBodyItem(std::shared_ptr<QtSoapType>);
+    void addHeaderItem(std::shared_ptr<QtSoapType>);
 
     // Method and response
     const QtSoapType &method() const;
     const QtSoapType &returnValue() const;
     void setMethod(const QtSoapQName &);
     void setMethod(const QString &name, const QString &url = QString::QString());
-    void addMethodArgument(QtSoapType *);
+    void addMethodArgument(std::shared_ptr<QtSoapType>);
     void addMethodArgument(const QString &uri, const QString &name, const QString &value);
     void addMethodArgument(const QString &uri, const QString &name, bool value, int dummy);
     void addMethodArgument(const QString &uri, const QString &name, int value);
@@ -451,7 +369,7 @@ public:
     const QtSoapType &faultDetail() const;
     void setFaultCode(FaultCode code);
     void setFaultString(const QString &fstring);
-    void addFaultDetail(QtSoapType *detail);
+    void addFaultDetail(std::shared_ptr<QtSoapType> detail);
 
     //additional method for setting further namespaces
     void useNamespace(const QString& prefix, const QString& namespaceURI);
@@ -503,7 +421,7 @@ public:
     {
     }
 
-    virtual QtSoapType *createObject(QDomNode) = 0;
+    virtual std::shared_ptr<QtSoapType> createObject(QDomNode) = 0;
 
     virtual QString errorString() const = 0;
 };
@@ -516,16 +434,15 @@ public:
     {
     }
 
-    QtSoapType *createObject(QDomNode node)
+    std::shared_ptr<QtSoapType> createObject(QDomNode node) Q_DECL_OVERRIDE
     {
-	T *t = new T();
-	if (t->parse(node)) {
-	    return t;
-	} else {
-	    errorStr = t->errorString();
-	    delete t;
-	    return 0;
-	}
+        auto t = std::make_shared<T>();
+        if (t->parse(node)) {
+            return t;
+        } else {
+            errorStr = t->errorString();
+            return nullptr;
+        }
     }
 
     QString errorString() const
@@ -549,7 +466,7 @@ public:
 
     bool registerHandler(const QString &name, QtSoapTypeConstructorBase *handler);
 
-    QtSmartPtr<QtSoapType> soapType(QDomNode node) const;
+    std::shared_ptr<QtSoapType> soapType(QDomNode node) const;
 
     QString errorString() const;
 
