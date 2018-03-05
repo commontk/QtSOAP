@@ -319,7 +319,7 @@ protected:
 class QT_QTSOAP_EXPORT QtSoapStructIterator
 {
 public:
-    QtSoapStructIterator(QtSoapStruct &);
+    QtSoapStructIterator(QtSoapStruct const &);
     ~QtSoapStructIterator();
 
     QtSoapQName key() const;
@@ -331,8 +331,8 @@ public:
     bool operator==(const QtSoapStructIterator &j) const;
 
 private:
-    QList<std::shared_ptr<QtSoapType>>::Iterator it;
-    QList<std::shared_ptr<QtSoapType>>::Iterator itEnd;
+    QList<std::shared_ptr<QtSoapType>>::const_iterator it;
+    QList<std::shared_ptr<QtSoapType>>::const_iterator itEnd;
 };
 
 class QT_QTSOAP_EXPORT QtSoapSimpleType : public QtSoapType

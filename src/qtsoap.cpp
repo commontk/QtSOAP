@@ -1956,7 +1956,7 @@ const QtSoapType &QtSoapStruct::at(const QtSoapQName &key) const
     Constructs a QtSoapStructIterator and initializes it to point to
     the first element in the struct \a s.
 */
-QtSoapStructIterator::QtSoapStructIterator(QtSoapStruct &s) :
+QtSoapStructIterator::QtSoapStructIterator(const QtSoapStruct &s) :
     it(s.dict.begin()), itEnd(s.dict.end())
 {
 }
