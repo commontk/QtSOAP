@@ -2561,8 +2561,8 @@ void QtSoapMessage::useNamespace(const QString &prefix, const QString &namespace
 QString QtSoapMessage::toXmlString(int indent) const
 {
     QDomImplementation impl;
-    QDomDocument doc = impl.createDocument(QString(), QString("placeholder"), QDomDocumentType());
-    doc.removeChild(doc.firstChild());
+    QDomDocument doc;
+    doc.appendChild(doc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"UTF-8\""));
     doc.appendChild(envelope.toDomElement(doc));
 
     QDomElement env = doc.firstChild().toElement();
