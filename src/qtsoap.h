@@ -45,7 +45,11 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtCore/QUrl>
 #include <QtCore/QHash>
-#include <QtCore/QLinkedList>
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+#  include <QtCore/QLinkedList>
+#else
+#  include <list>
+#endif
 #include <QtCore/QPointer>
 
 #if defined(Q_OS_WIN) || defined(Q_OS_SYMBIAN)
@@ -556,7 +560,11 @@ public:
 private:
     mutable QString errorStr;
     QHash<QString, QtSoapTypeConstructorBase *> typeHandlers;
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QLinkedList<QtSoapTypeConstructorBase*> deleteList;
+#else
+    std::list<QtSoapTypeConstructorBase *> deleteList;
+#endif
 };
 
 class QT_QTSOAP_EXPORT QtSoapNamespaces
