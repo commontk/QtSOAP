@@ -2448,9 +2448,14 @@ bool QtSoapMessage::setContent(const QByteArray &buffer)
     if (!doc.setContent(buffer, true, &errorMsg,
 			&errorLine, &errorColumn)) {
 	QString s;
-	s.sprintf("%s at line %i, column %i", errorMsg.toLatin1().constData(),
-		  errorLine, errorColumn);
-	setFaultCode(VersionMismatch);
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    s.sprintf("%s at line %i, column %i", errorMsg.toLatin1().constData(),
+              errorLine, errorColumn);
+#else
+    s = "%1 at line %2, column %3";
+    s = s.arg(errorMsg.toLatin1().constData()).arg(errorLine).arg(errorColumn);
+#endif
+    setFaultCode(VersionMismatch);
 	setFaultString("XML parse error");
 	addFaultDetail(new QtSoapSimpleType(QtSoapQName("ParseError"), s));
 	return false;
@@ -2902,11 +2907,23 @@ void QtSoapMessage::addMethodArgument(const QString &name, const QString &uri, i
 QtSoapTypeFactory::QtSoapTypeFactory()
 {
     QtSoapTypeConstructor<QtSoapStruct> *structConstructor = new QtSoapTypeConstructor<QtSoapStruct>();
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     deleteList.append(structConstructor);
+#else
+    deleteList.push_back(structConstructor);
+#endif
     QtSoapTypeConstructor<QtSoapArray> *arrayConstructor = new QtSoapTypeConstructor<QtSoapArray>();
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     deleteList.append(arrayConstructor);
+#else
+    deleteList.push_back(arrayConstructor);
+#endif
     QtSoapTypeConstructor<QtSoapSimpleType> *basicTypeConstructor = new QtSoapTypeConstructor<QtSoapSimpleType>();
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     deleteList.append(basicTypeConstructor);
+#else
+    deleteList.push_back(basicTypeConstructor);
+#endif
 
     registerHandler("struct", structConstructor);
     registerHandler("array", arrayConstructor);
@@ -2947,7 +2964,11 @@ QtSoapTypeFactory::QtSoapTypeFactory()
 */
 QtSoapTypeFactory::~QtSoapTypeFactory()
 {
-    QLinkedList<QtSoapTypeConstructorBase*>::ConstIterator it = deleteList.begin();
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    QLinkedList<QtSoapTypeConstructorBase *>::ConstIterator it = deleteList.begin();
+#else
+    std::list<QtSoapTypeConstructorBase *>::const_iterator it = deleteList.begin();
+#endif
     while (it != deleteList.end()) {
         delete *it;
         ++it;

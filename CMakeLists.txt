@@ -15,7 +15,9 @@ else()
   cmake_minimum_required(VERSION 2.8.2)
 endif()
 
-PROJECT(QtSOAP)
+cmake_policy(SET CMP0048 NEW)
+PROJECT(QtSOAP VERSION 2.7.1)
+
 
 include(CTestUseLaunchers OPTIONAL)
 
@@ -46,6 +48,54 @@ else()
   find_package(Qt4 4.6 COMPONENTS QtCore QtNetwork QtXml REQUIRED)
   include(${QT_USE_FILE})
 endif()
+
+
+#-----------------------------------------------------------------------------
+# Installation (https://github.com/forexample/package-example)
+include( GNUInstallDirs )
+set(config_install_dir "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
+install( DIRECTORY doc/html/ DESTINATION ${CMAKE_INSTALL_DOCDIR} )
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/UseQtSOAP.cmake DESTINATION ${config_install_dir} )
+
+set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
+set(version_config "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake")
+set(project_config "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake")
+set(targets_export_name "${PROJECT_NAME}Targets")
+set(namespace "${PROJECT_NAME}::")
+
+# Include module with function 'write_basic_package_version_file'
+include(CMakePackageConfigHelpers)
+
+# Configure '<PROJECT-NAME>ConfigVersion.cmake'
+# Use:
+#   * PROJECT_VERSION
+write_basic_package_version_file(
+  "${version_config}" COMPATIBILITY SameMajorVersion
+)
+
+# Configure '<PROJECT-NAME>Config.cmake'
+# Use variables:
+#   * targets_export_name
+#   * PROJECT_NAME
+configure_package_config_file(
+  "QtSOAPConfig.cmake.in"
+  "${project_config}"
+  INSTALL_DESTINATION "${config_install_dir}"
+  NO_CHECK_REQUIRED_COMPONENTS_MACRO
+)
+
+
+
+install(
+  FILES "${project_config}" "${version_config}"
+  DESTINATION "${config_install_dir}"
+)
+
+install(
+  EXPORT "${targets_export_name}"
+  NAMESPACE "${namespace}"
+  DESTINATION "${config_install_dir}"
+)
 
 #-----------------------------------------------------------------------------
 # Subdirectories
