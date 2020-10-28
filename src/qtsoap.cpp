@@ -687,7 +687,7 @@ QtSoapType::Type QtSoapType::nameToType(const QString &name)
 */
 QString QtSoapType::toString() const
 {
-    return QString::QString();
+    return QString();
 }
 
 /*!
@@ -2997,7 +2997,14 @@ QtSmartPtr<QtSoapType> QtSoapTypeFactory::soapType(QDomNode node) const
 
     if (attr.isNull() || !constructor) {
         QHash<QString, QtSoapTypeConstructorBase *>::ConstIterator it;
-	if (node.firstChild().isElement()) {
+        bool hasElemNode = false;
+        for (int i = 0; i < node.childNodes().count(); i++) {
+            if (node.childNodes().at(i).isElement()) {
+                hasElemNode = true;
+                break;
+            }
+        }
+        if (hasElemNode) {
             if (localName(node.nodeName().toLower()) == "array") {
                 it = typeHandlers.find("array");
             } else

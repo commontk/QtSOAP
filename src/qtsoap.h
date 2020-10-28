@@ -155,7 +155,7 @@ private:
 class QT_QTSOAP_EXPORT QtSoapQName
 {
 public:
-    QtSoapQName(const QString &name = QString::QString(), const QString &uri = QString::QString());
+    QtSoapQName(const QString &name = QString(), const QString &uri = QString());
     ~QtSoapQName();
 
     QtSoapQName &operator =(const QString &s);
@@ -430,7 +430,7 @@ public:
     const QtSoapType &method() const;
     const QtSoapType &returnValue() const;
     void setMethod(const QtSoapQName &);
-    void setMethod(const QString &name, const QString &url = QString::QString());
+    void setMethod(const QString &name, const QString &url = QString());
     void addMethodArgument(QtSoapType *);
     void addMethodArgument(const QString &uri, const QString &name, const QString &value);
     void addMethodArgument(const QString &uri, const QString &name, bool value, int dummy);
