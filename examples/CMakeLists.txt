@@ -1,8 +1,8 @@
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${${PROJECT_NAME}_SOURCE_DIR}/src
   )
 
-ADD_SUBDIRECTORY(easter)
-ADD_SUBDIRECTORY(google)
-ADD_SUBDIRECTORY(population)
+add_subdirectory(easter)
+add_subdirectory(google)
+add_subdirectory(population)

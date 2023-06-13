@@ -15,11 +15,11 @@ else()
   cmake_minimum_required(VERSION 2.8.2)
 endif()
 
-PROJECT(QtSOAP)
+project(QtSOAP)
 
 include(CTestUseLaunchers OPTIONAL)
 
-OPTION(QtSOAP_BUILD_EXAMPLES "Build examples" OFF)
+option(QtSOAP_BUILD_EXAMPLES "Build examples" OFF)
 
 # We build QtSOAP as a static library. On Windows, this avoids copying
 # a dll to the directory containing the linked executable or fiddling
@@ -30,12 +30,12 @@ OPTION(QtSOAP_BUILD_EXAMPLES "Build examples" OFF)
 #-----------------------------------------------------------------------------
 # Output directories.
 #
-SET(output_dir ${QtSOAP_BINARY_DIR}/bin)
-FOREACH(type LIBRARY RUNTIME ARCHIVE)
-  IF(NOT DEFINED CMAKE_${type}_OUTPUT_DIRECTORY)
-    SET(CMAKE_${type}_OUTPUT_DIRECTORY ${output_dir} CACHE INTERNAL "Single output directory for building all libraries.")
-  ENDIF()
-ENDFOREACH()
+set(output_dir ${QtSOAP_BINARY_DIR}/bin)
+foreach(type LIBRARY RUNTIME ARCHIVE)
+  if(NOT DEFINED CMAKE_${type}_OUTPUT_DIRECTORY)
+    set(CMAKE_${type}_OUTPUT_DIRECTORY ${output_dir} CACHE INTERNAL "Single output directory for building all libraries.")
+  endif()
+endforeach()
 
 #-----------------------------------------------------------------------------
 # Qt
@@ -50,15 +50,15 @@ endif()
 #-----------------------------------------------------------------------------
 # Subdirectories
 #
-ADD_SUBDIRECTORY(src)
-IF(QtSOAP_BUILD_EXAMPLES)
-  ADD_SUBDIRECTORY(examples)
-ENDIF()
+add_subdirectory(src)
+if(QtSOAP_BUILD_EXAMPLES)
+  add_subdirectory(examples)
+endif()
 
 #-----------------------------------------------------------------------------
 # Generate QtSOAPConfig file
 #
-CONFIGURE_FILE(UseQtSOAP.cmake.in
+configure_file(UseQtSOAP.cmake.in
                ${QtSOAP_BINARY_DIR}/UseQtSOAP.cmake COPYONLY)
 
-INCLUDE(GenerateQtSOAPConfig.cmake)
+include(GenerateQtSOAPConfig.cmake)
