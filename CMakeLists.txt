@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.0)
+
 set(QtSOAP_QT_VERSION "4" CACHE STRING "Expected Qt version")
 mark_as_advanced(QtSOAP_QT_VERSION)
 
@@ -8,11 +10,8 @@ if(NOT (QtSOAP_QT_VERSION VERSION_EQUAL "4" OR QtSOAP_QT_VERSION VERSION_EQUAL "
 endif()
 
 if(QtSOAP_QT_VERSION VERSION_GREATER "4")
-  cmake_minimum_required(VERSION 2.8.12)
   set(QT5_INSTALL_PREFIX "" CACHE PATH "The install location of Qt5")
   set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${QT5_INSTALL_PREFIX})
-else()
-  cmake_minimum_required(VERSION 2.8.2)
 endif()
 
 project(QtSOAP)
