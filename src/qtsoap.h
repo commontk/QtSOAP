@@ -45,8 +45,16 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtCore/QUrl>
 #include <QtCore/QHash>
+// Use of QLinkedList is superseded by std::list
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
 #include <QtCore/QLinkedList>
+#endif
 #include <QtCore/QPointer>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+#include <list>
+#endif
+
 
 #if defined(Q_OS_WIN) || defined(Q_OS_SYMBIAN)
   #if defined(QtSOAP_EXPORTS)
@@ -556,7 +564,11 @@ public:
 private:
     mutable QString errorStr;
     QHash<QString, QtSoapTypeConstructorBase *> typeHandlers;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+    std::list<QtSoapTypeConstructorBase*> deleteList;
+#else
     QLinkedList<QtSoapTypeConstructorBase*> deleteList;
+#endif
 };
 
 class QT_QTSOAP_EXPORT QtSoapNamespaces
