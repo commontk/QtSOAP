@@ -2902,11 +2902,25 @@ void QtSoapMessage::addMethodArgument(const QString &name, const QString &uri, i
 QtSoapTypeFactory::QtSoapTypeFactory()
 {
     QtSoapTypeConstructor<QtSoapStruct> *structConstructor = new QtSoapTypeConstructor<QtSoapStruct>();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+    deleteList.push_back(structConstructor);
+#else
     deleteList.append(structConstructor);
+#endif
+
     QtSoapTypeConstructor<QtSoapArray> *arrayConstructor = new QtSoapTypeConstructor<QtSoapArray>();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+    deleteList.push_back(arrayConstructor);
+#else
     deleteList.append(arrayConstructor);
+#endif
+
     QtSoapTypeConstructor<QtSoapSimpleType> *basicTypeConstructor = new QtSoapTypeConstructor<QtSoapSimpleType>();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+    deleteList.push_back(basicTypeConstructor);
+#else
     deleteList.append(basicTypeConstructor);
+#endif
 
     registerHandler("struct", structConstructor);
     registerHandler("array", arrayConstructor);
@@ -2947,7 +2961,11 @@ QtSoapTypeFactory::QtSoapTypeFactory()
 */
 QtSoapTypeFactory::~QtSoapTypeFactory()
 {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+    std::list<QtSoapTypeConstructorBase*>::const_iterator it = deleteList.begin();
+#else
     QLinkedList<QtSoapTypeConstructorBase*>::ConstIterator it = deleteList.begin();
+#endif
     while (it != deleteList.end()) {
         delete *it;
         ++it;
