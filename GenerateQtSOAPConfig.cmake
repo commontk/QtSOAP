@@ -26,26 +26,26 @@
 # Settings specific to the build tree.
 
 # The "use" file.
-SET(QtSOAP_USE_FILE ${QtSOAP_BINARY_DIR}/UseQtSOAP.cmake)
+set(QtSOAP_USE_FILE ${QtSOAP_BINARY_DIR}/UseQtSOAP.cmake)
 
 # Determine the include directories needed.
-SET(QtSOAP_INCLUDE_DIRS_CONFIG
+set(QtSOAP_INCLUDE_DIRS_CONFIG
   ${QtSOAP_SOURCE_DIR}/src
 )
 
 # Library directory.
-SET(QtSOAP_LIBRARY_DIRS_CONFIG ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+set(QtSOAP_LIBRARY_DIRS_CONFIG ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
 # Runtime library directory.
-SET(QtSOAP_RUNTIME_LIBRARY_DIRS_CONFIG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+set(QtSOAP_RUNTIME_LIBRARY_DIRS_CONFIG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 # Build configuration information.
-SET(QtSOAP_CONFIGURATION_TYPES_CONFIG ${CMAKE_CONFIGURATION_TYPES})
-SET(QtSOAP_BUILD_TYPE_CONFIG ${CMAKE_BUILD_TYPE})
+set(QtSOAP_CONFIGURATION_TYPES_CONFIG ${CMAKE_CONFIGURATION_TYPES})
+set(QtSOAP_BUILD_TYPE_CONFIG ${CMAKE_BUILD_TYPE})
 
 #-----------------------------------------------------------------------------
 # Configure QtSOAPConfig.cmake for the build tree.
-CONFIGURE_FILE(${QtSOAP_SOURCE_DIR}/QtSOAPConfig.cmake.in
+configure_file(${QtSOAP_SOURCE_DIR}/QtSOAPConfig.cmake.in
                ${QtSOAP_BINARY_DIR}/QtSOAPConfig.cmake @ONLY IMMEDIATE)
 
 #-----------------------------------------------------------------------------

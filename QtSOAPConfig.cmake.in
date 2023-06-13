@@ -22,25 +22,25 @@
 # QtSOAPConfig.cmake - QtSOAP CMake configuration file for external projects.
 #
 
-SET(QtSOAP_LIBRARIES @PROJECT_NAME@)
+set(QtSOAP_LIBRARIES @PROJECT_NAME@)
 
 # The QtSOAP include file directories.
-SET(QtSOAP_INCLUDE_DIRS "@QtSOAP_INCLUDE_DIRS_CONFIG@")
+set(QtSOAP_INCLUDE_DIRS "@QtSOAP_INCLUDE_DIRS_CONFIG@")
 
 # The QtSOAP library directories. Note that if
 # QtSOAP_CONFIGURATION_TYPES is set (see below) then these directories
 # will be the parent directories under which there will be a directory
 # of runtime binaries for each configuration type.
-SET(QtSOAP_LIBRARY_DIRS "@QtSOAP_LIBRARY_DIRS_CONFIG@")
+set(QtSOAP_LIBRARY_DIRS "@QtSOAP_LIBRARY_DIRS_CONFIG@")
 
 # The QtSOAP runtime library directories. Note that if
 # QtSOAP_CONFIGURATION_TYPES is set (see below) then these directories
 # will be the parent directories under which there will be a directory
 # of runtime libraries for each configuration type.
-SET(QtSOAP_RUNTIME_LIBRARY_DIRS "@QtSOAP_RUNTIME_LIBRARY_DIRS_CONFIG@")
+set(QtSOAP_RUNTIME_LIBRARY_DIRS "@QtSOAP_RUNTIME_LIBRARY_DIRS_CONFIG@")
 
 # The location of the UseQtSOAP.cmake file.
-SET(QtSOAP_USE_FILE "@QtSOAP_USE_FILE@")
+set(QtSOAP_USE_FILE "@QtSOAP_USE_FILE@")
 
 
 # A QtSOAP install tree always provides one build configuration.
@@ -55,5 +55,5 @@ SET(QtSOAP_USE_FILE "@QtSOAP_USE_FILE@")
 # is in a QtSOAP build tree then QtSOAP_CONFIGURATION_TYPES
 # and QtSOAP_BUILD_TYPE will have values matching CMAKE_CONFIGURATION_TYPES
 # and CMAKE_BUILD_TYPE for that build tree (only one will ever be set).
-SET(QtSOAP_CONFIGURATION_TYPES @QtSOAP_CONFIGURATION_TYPES_CONFIG@)
-SET(QtSOAP_BUILD_TYPE @QtSOAP_BUILD_TYPE_CONFIG@)
+set(QtSOAP_CONFIGURATION_TYPES @QtSOAP_CONFIGURATION_TYPES_CONFIG@)
+set(QtSOAP_BUILD_TYPE @QtSOAP_BUILD_TYPE_CONFIG@)
