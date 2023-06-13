@@ -83,76 +83,76 @@ class QtSmartPtr
 public:
     inline QtSmartPtr(T *data = 0)
     {
-	d = data;
-	r = new int;
-	*r = 1;
+        d = data;
+        r = new int;
+        *r = 1;
     }
 
     inline QtSmartPtr(const QtSmartPtr &copy)
     {
-	if (*copy.r != 0)
-	    ++(*copy.r);
+        if (*copy.r != 0)
+            ++(*copy.r);
 
-	r = copy.r;
-	d = copy.d;
+        r = copy.r;
+        d = copy.d;
     }
 
     inline ~QtSmartPtr()
     {
         if ((*r) == 0)
             delete r;
-	else if ((*r) != 0 && --(*r) == 0) {
-	    delete r;
-	    if (d) delete d;
-	}
+        else if ((*r) != 0 && --(*r) == 0) {
+            delete r;
+            if (d) delete d;
+        }
     }
 
     inline QtSmartPtr &operator =(const QtSmartPtr &copy)
     {
-	if (*copy.r != 0)
-	    ++(*copy.r);
+        if (*copy.r != 0)
+            ++(*copy.r);
 
         if ((*r) == 0)
             delete r;
-	else if ((*r) != 0 && --(*r) == 0) {
-	    delete r;
-	    if (d) delete d;
-	}
+        else if ((*r) != 0 && --(*r) == 0) {
+            delete r;
+            if (d) delete d;
+        }
 
-	r = copy.r;
-	d = copy.d;
-	return *this;
+        r = copy.r;
+        d = copy.d;
+        return *this;
     }
 
     inline T &operator *() const
     {
-	return *d;
+        return *d;
     }
 
     inline T *operator ->() const
     {
-	    return d;
+        return d;
     }
 
     inline T *ptr() const
     {
-	return d;
+        return d;
     }
 
     inline T &ref() const
     {
-	return *d;
+        return *d;
     }
 
     inline T *releasedPtr() const
     {
-	(*r) = 0;
-	return d;
+        (*r) = 0;
+        return d;
     }
 
     inline bool isNull() const
     {
-	return d == 0;
+        return d == 0;
     }
 
 private:
@@ -183,14 +183,14 @@ class QT_QTSOAP_EXPORT QtSoapType
 {
 public:
     enum Type {
-	Duration, DateTime, Time, Date, GYearMonth, GYear, GMonthDay,
-	GDay, GMonth, Boolean, Base64Binary, HexBinary, Float, Double,
-	AnyURI, QName, NOTATION, String, NormalizedString, Token, Language,
-	Name, NMTOKEN, NCName, ID, IDREF, ENTITY, Decimal, Integer,
-	NonPositiveInteger, NegativeInteger, Long, Int, Short,
-	Byte, NonNegativeInteger, UnsignedLong, PositiveInteger,
-	UnsignedInt, UnsignedShort, UnsignedByte,
-	Array, Struct, Other
+        Duration, DateTime, Time, Date, GYearMonth, GYear, GMonthDay,
+        GDay, GMonth, Boolean, Base64Binary, HexBinary, Float, Double,
+        AnyURI, QName, NOTATION, String, NormalizedString, Token, Language,
+        Name, NMTOKEN, NCName, ID, IDREF, ENTITY, Decimal, Integer,
+        NonPositiveInteger, NegativeInteger, Long, Int, Short,
+        Byte, NonNegativeInteger, UnsignedLong, PositiveInteger,
+        UnsignedInt, UnsignedShort, UnsignedByte,
+        Array, Struct, Other
     };
 
     QtSoapType();
@@ -252,7 +252,7 @@ class QT_QTSOAP_EXPORT QtSoapArray : public QtSoapType
 public:
     QtSoapArray();
     QtSoapArray(const QtSoapQName &name, QtSoapType::Type type = Other,
-		int size0 = -1, int size1 = -1, int size2 = -1, int size3 = -1, int size4 = -1);
+                int size0 = -1, int size1 = -1, int size2 = -1, int size3 = -1, int size4 = -1);
     QtSoapArray(const QtSoapArray &copy);
     QtSoapArray &operator = (const QtSoapArray &copy);
     ~QtSoapArray();
@@ -446,11 +446,11 @@ public:
 
     // Fault
     enum FaultCode {
-	VersionMismatch,
-	MustUnderstand,
-	Client,
-	Server,
-	Other
+        VersionMismatch,
+        MustUnderstand,
+        Client,
+        Server,
+        Other
     };
 
     bool isFault() const;
@@ -473,10 +473,10 @@ public:
 
 protected:
     enum MessageType {
-	Fault,
-	MethodRequest,
-	MethodResponse,
-	OtherType
+        Fault,
+        MethodRequest,
+        MethodResponse,
+        OtherType
     };
 
     bool isValidSoapMessage(const QDomDocument &candidate);
@@ -526,19 +526,19 @@ public:
 
     QtSoapType *createObject(QDomNode node)
     {
-	T *t = new T();
-	if (t->parse(node)) {
-	    return t;
-	} else {
-	    errorStr = t->errorString();
-	    delete t;
-	    return 0;
-	}
+        T *t = new T();
+        if (t->parse(node)) {
+            return t;
+        } else {
+            errorStr = t->errorString();
+            delete t;
+            return 0;
+        }
     }
 
     QString errorString() const
     {
-	return errorStr;
+        return errorStr;
     }
 
 private:

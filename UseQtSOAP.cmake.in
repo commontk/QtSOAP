@@ -19,18 +19,18 @@
 ###########################################################################
 
 #
-# This module is provided as QtSOAP_USE_FILE by QtSOAPConfig.cmake. 
+# This module is provided as QtSOAP_USE_FILE by QtSOAPConfig.cmake.
 # It can be INCLUDED in a project to load the needed compiler and linker
 # settings to use QtSOAP.
 #
- 
+
 IF(NOT QtSOAP_USE_FILE_INCLUDED)
   SET(QtSOAP_USE_FILE_INCLUDED 1)
-  
+
   # Add include directories needed to use QtSOAP.
   INCLUDE_DIRECTORIES(${QtSOAP_INCLUDE_DIRS})
- 
+
   # Add link directories needed to use QtSOAP.
   LINK_DIRECTORIES(${QtSOAP_LIBRARY_DIRS})
- 
+
 ENDIF()
