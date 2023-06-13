@@ -2448,8 +2448,13 @@ bool QtSoapMessage::setContent(const QByteArray &buffer)
     if (!doc.setContent(buffer, true, &errorMsg,
                         &errorLine, &errorColumn)) {
         QString s;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+        s = "%1 at line %2, column %3";
+        s = s.arg(errorMsg.toLatin1().constData()).arg(errorLine).arg(errorColumn);
+#else
         s.sprintf("%s at line %i, column %i", errorMsg.toLatin1().constData(),
                   errorLine, errorColumn);
+#endif
         setFaultCode(VersionMismatch);
         setFaultString("XML parse error");
         addFaultDetail(new QtSoapSimpleType(QtSoapQName("ParseError"), s));
