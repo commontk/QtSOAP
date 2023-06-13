@@ -10,3 +10,7 @@
 # $ git config blame.ignoreRevsFile .git-blame-ignore-revs
 #
 # Ignore changes introduced when doing global file format changes
+# STYLE: Strip trailing spaces
+5b4bde3a6849374169d10e76256abdea8505d9b9
+# STYLE: Convert tabs into spaces
+6853c8dc309c19484742de4adf2095d5a432b801
