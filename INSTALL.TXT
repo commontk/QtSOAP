@@ -41,7 +41,7 @@ Unpacking and installation
 
     The configure script is called "configure" on unix/mac and
     "configure.bat" on Windows. It should be run from a command line
-    after cd'ing to the package directory. 
+    after cd'ing to the package directory.
 
     You can choose whether you want to use the component by including
     its source code directly into your project, or build the component
@@ -88,7 +88,7 @@ Unpacking and installation
     Note: If you are using the built-in Qt Designer from the Qt Visual
     Studio Integration, you will need to manually copy the plugin DLL
     file, i.e. copy
-	%QTDIR%\plugins\designer\some-component.dll 
+	%QTDIR%\plugins\designer\some-component.dll
     to the Qt Visual Studio Integration plugin path, typically:
 	C:\Program Files\Trolltech\Qt VS Integration\plugins
 
@@ -145,7 +145,7 @@ later):
 1.  In Assistant, open the Edit->Preferences dialog and choose the
     Documentation tab. Click the Add... button and select the file
        your-install-dir/some-package/doc/html/some-package.qch
-    
+
 For Qt versions prior to 4.4, do instead the following:
 
 1.  The directory your-install-dir/some-package/doc/html contains a

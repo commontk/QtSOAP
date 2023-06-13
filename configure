@@ -2,10 +2,10 @@
 
 if [ "x$1" != "x" -a "x$1" != "x-library" ]; then
     echo "Usage: $0 [-library]"
-    echo 
+    echo
     echo "-library: Build the component as a dynamic library (DLL). Default is to"
     echo "          include the component source code directly in the application."
-    echo 
+    echo
     exit 0
 fi
 
